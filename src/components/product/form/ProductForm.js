@@ -1,8 +1,11 @@
-import { FormControl, TextField } from '@mui/material';
-import React, { useState } from 'react'
+import { Button, FormControl, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 import { useForm } from '../../../applications'
 import { generateProductFormValues } from './generateProductFormValues'
 import FileBase from "react-file-base64";
+import { useDispatch } from 'react-redux';
+import { saveProduct, setSelectedProduct, useSelectedProduct } from '../../../redux';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductForm = () => {
     const {formValues: 
@@ -11,6 +14,36 @@ export const ProductForm = () => {
         setFormValues,
     } = useForm({ defaultFormValues: generateProductFormValues() });
     const [image, setImage] = useState();
+    const dispach = useDispatch();
+    const navigate = useNavigate();
+
+    const selectedProduct = useSelectedProduct();
+
+    const onSaveProduct = () => {
+        const name = productFormValues.name.value;
+        const description = productFormValues.description.value;
+        const brand = productFormValues.brand.value;
+        const category = productFormValues.category.value;
+        const price = productFormValues.price.value;
+        dispach(
+            saveProduct({
+                product: {name, description, brand, category, price, image},
+                isUpdating: !!selectedProduct,
+                id: selectedProduct?._id,
+            }),
+        )
+        .unwrap()
+        .then(() => {
+            dispach(setSelectedProduct(null));
+            navigate("/");
+        })
+    };
+
+    useEffect(() => {
+        if (selectedProduct) {
+            setFormValues(generateProductFormValues(selectedProduct));
+        }
+    }, [selectedProduct]);
 
   return (
     <FormControl fullWidth>
@@ -62,6 +95,7 @@ export const ProductForm = () => {
                 setImage(base64);
             }} 
         />
+        <Button onClick={onSaveProduct}>save</Button>
     </FormControl>
   )
 }

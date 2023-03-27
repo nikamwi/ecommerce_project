@@ -28,7 +28,9 @@ export const persistor = persistStore(store);
 export {authenticateUser} from "./slices/userSlice";
 
 // product slice 
-export {saveProduct} from "./slices/productSlice";
+export {saveProduct, fetchHomePageProducts, setSelectedProduct} from "./slices/productSlice";
 
 // hooks
 export const useUserInfo = () => useSelector((state) => state.user.userData);
+export const useHomPageProducts = () => useSelector((state) => state.product.homePageProducts);
+export const useSelectedProduct = () => useSelector((state) => state.product.selectedProduct);
