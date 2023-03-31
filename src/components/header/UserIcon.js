@@ -2,7 +2,7 @@ import { Avatar, Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { isUserAdmin } from '../../applications';
+import { getUserInitials, isUserAdmin } from '../../applications';
 import { logout, useUserInfo } from '../../redux';
 
 export const UserIcon = () => {
@@ -16,7 +16,7 @@ export const UserIcon = () => {
     <Box>
         <IconButton onClick={(e) => setAnchor(e.currentTarget)}> 
             <Avatar>
-                NM
+                {getUserInitials(userInfo?.firstName, userInfo?.lastName)}
             </Avatar>
         </IconButton>
         <Box>

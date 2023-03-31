@@ -33,9 +33,12 @@ export {authenticateUser, logout} from "./slices/userSlice";
 export {
     saveProduct, 
     fetchHomePageProducts, 
-    setSelectedProduct,
     fetchProductsByCategory,
     fetchSingleProduct,
+    queryProducts,
+    // reducer function
+    setSelectedProduct,
+    clearSearchResults,
 } from "./slices/productSlice";
 
 //  cart slice
@@ -63,6 +66,10 @@ export const useCategoryProducts = () =>
     useSelector((state) => state.product.categoryProducts);
 export const useSingleProducts = () => 
     useSelector((state) => state.product.singleProduct);
+export const useSearchResults = () =>
+    useSelector((state) => state.product.searchResults);
+export const useProductLoading = () =>
+    useSelector((state) => state.product.loading);
 
 // cart
 export const useCartItems = () => useSelector((state) => state.cart.cartItems);

@@ -70,7 +70,21 @@ export const fetchSingleProduct = createAsyncThunk(
             return rejectWithValue("could not fetch single product");
         }
     }
-)
+);
+
+export const queryProducts = createAsyncThunk(
+    "product/queryProducts",
+    async (searchString, {rejectWithValue}) => {
+        try {
+            const {data} = await axiosInstance.get(
+                `/products?name=${searchString}`
+            );
+            return data;
+        } catch (error) {
+            rejectWithValue("product not found");
+        }
+    }
+);
  
 const productSlice = createSlice({
     name: "product",
@@ -82,10 +96,14 @@ const productSlice = createSlice({
         sidebarItems: [],
         categoryProducts: [],
         singleProduct: null,
+        searchResults: [],
     },
     reducers: {
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload;
+        },
+        clearSearchResults: (state) => {
+            state.searchResults = [];
         },
     },
     extraReducers: (builder) => {
@@ -139,9 +157,20 @@ const productSlice = createSlice({
             state.loading = false;
             state.error = action.payload; 
         });
+        builder.addCase(queryProducts.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(queryProducts.fulfilled, (state, action) => {
+            state.loading = false;
+            state.searchResults = action.payload.products;
+        });
+        builder.addCase(queryProducts.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        });
     },
 });
 
-export const {setSelectedProduct} = productSlice.actions;
+export const {setSelectedProduct, clearSearchResults} = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

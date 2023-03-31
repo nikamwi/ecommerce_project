@@ -7,7 +7,7 @@ import { fetchCart, fetchHomePageProducts, useUserInfo } from './redux';
 import { RoutesComponent } from './Routes';
 
 const StyleContetContainer = styled(Box)(() => ({
-  padding: "0 0 0 37px",
+  // padding: "0 0 0 0",
   width: "100%",
   // marginLeft: "255px",
   marginTop: "100px",

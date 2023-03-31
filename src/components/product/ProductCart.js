@@ -10,6 +10,7 @@ import { rateProduct } from '../../redux/slices/productSlice';
 const StyledCard = styled(Card)(() => ({
     width: 350,
     borderRadius: 3,
+    padding: "0 0 0 37px",
 }));
 
 const StyledCardInfoContainer = styled(Box)(() => ({
@@ -72,7 +73,7 @@ export const ProductCart = ({product}) => {
             <Link 
                 style={{textDecoration: "none"}}
                 to={`/products/categories/${category}/${name}`}
-                state={{ x:4 }}
+                state={{ id: _id }}
             >
                 <img
                     src={image}
