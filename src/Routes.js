@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { isUserAdmin, ProtectedRoute } from './applications'
-import { HomePage, LoginPage, ProductFormPage, RegisterPage } from './pages'
+import { CategoryProductsPage, HomePage, LoginPage, ProductFormPage, RegisterPage, SingleProductPages } from './pages'
 import { useUserInfo } from './redux'
 
 export const RoutesComponent = () => {
@@ -20,6 +20,12 @@ export const RoutesComponent = () => {
           <ProtectedRoute hasAccess={isUserAdmin(userData)}>
             <ProductFormPage/>
           </ProtectedRoute> 
+        }/>
+        <Route path="/products/categories/:categoryName" element={
+          <CategoryProductsPage/>
+        }/>
+        <Route path="/products/categories/:categoryName/:name" element={
+          <SingleProductPages/>
         }/>
     </Routes>
   )

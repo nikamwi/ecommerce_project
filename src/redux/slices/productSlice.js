@@ -28,6 +28,50 @@ export const saveProduct = createAsyncThunk(
     }
 );
 
+export const fetchProductsByCategory = createAsyncThunk(
+    "product/fetchProductsByCategory",
+    async (url, {rejectWithValue}) => {
+        try {
+            const {data} = await axiosInstance.get(`/products/categories/${url}`);
+            return data;
+        } catch (error) {
+            return rejectWithValue("couldn't fetch category products");
+        }
+    }
+);
+
+export const rateProduct = createAsyncThunk(
+    "product/rateProduct",
+    async ({productId, userId, rating, isHome, url}, {rejectWithValue, dispatch}) => {
+        try {
+            await axiosInstance.post(`/products/${productId}/users/${userId}/rate`, {
+                rating,
+            });
+            if (isHome) {
+                dispatch(fetchHomePageProducts());
+            } else {
+                dispatch(fetchHomePageProducts(url));
+            }
+        } catch (error) {
+            return rejectWithValue("could not rate product");
+        }
+    }
+);
+
+export const fetchSingleProduct = createAsyncThunk(
+    "product/fetchSingleProduct",
+    async ({id, category}, {rejectWithValue}) => {
+        try {
+            const {data} = await axiosInstance.get(
+                `/products/category/${category}/${id}`
+            );
+            return data;
+        } catch (error) {
+            return rejectWithValue("could not fetch single product");
+        }
+    }
+)
+ 
 const productSlice = createSlice({
     name: "product",
     initialState: {
@@ -35,6 +79,9 @@ const productSlice = createSlice({
         error: null,
         homePageProducts: [],
         selectedProduct: null,
+        sidebarItems: [],
+        categoryProducts: [],
+        singleProduct: null,
     },
     reducers: {
         setSelectedProduct: (state, action) => {
@@ -48,6 +95,7 @@ const productSlice = createSlice({
         builder.addCase(fetchHomePageProducts.fulfilled, (state, action) => {
             state.loading = false;
             state.homePageProducts = action.payload.products;
+            state.sidebarItems = action.payload.categories;
             state.error = null;
         });
         builder.addCase(fetchHomePageProducts.rejected, (state, action) => {
@@ -65,6 +113,31 @@ const productSlice = createSlice({
         builder.addCase(saveProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+        });
+        builder.addCase(fetchProductsByCategory.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+            state.loading = false;
+            state.categoryProducts = action.payload;
+        });
+        builder.addCase(fetchProductsByCategory.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        });
+        builder.addCase(rateProduct.rejected, (state,action) => {
+            state.error = action.payload;
+        });
+        builder.addCase(fetchSingleProduct.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(fetchSingleProduct.fulfilled, (state, action) => {
+            state.loading = false;
+            state.singleProduct = action.payload.product;
+        });
+        builder.addCase(fetchSingleProduct.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload; 
         });
     },
 });

@@ -1,25 +1,41 @@
+import { Box, styled } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import './App.css';
-import { fetchHomePageProducts } from './redux';
+import { Header } from './components/header';
+import { fetchCart, fetchHomePageProducts, useUserInfo } from './redux';
 import { RoutesComponent } from './Routes';
+
+const StyleContetContainer = styled(Box)(() => ({
+  padding: "0 0 0 37px",
+  width: "100%",
+  // marginLeft: "255px",
+  marginTop: "100px",
+  // minHeight: "100vh",
+  textAlign: "center"
+}))
 
 function App() {
   const dispach = useDispatch();
+  const userInfo = useUserInfo();
 
   useEffect(() => {
     dispach(fetchHomePageProducts())
   }, []);
 
+  useEffect(() => {
+    if (userInfo) {
+      dispach(fetchCart(userInfo._id));
+    }
+  },[userInfo]);
+
   return (
-    <div className="App">
-      <Link to="/">home</Link><br/>
-      <Link to="/register">register</Link><br/>
-      <Link to="/login">login</Link><br/>
-      <Link to="/products/new">add product</Link><br/>
-      <RoutesComponent/>
-    </div>
+    <Box>
+      <Header/>
+      <StyleContetContainer>
+        <RoutesComponent/>
+      </StyleContetContainer>
+    </Box>
   );
 }
 
